@@ -1,0 +1,4 @@
+-- 5a
+SELECT * FROM books NATURAL LEFT OUTER JOIN publishers;
+-- 5b
+SELECT * FROM books NATURAL RIGHT OUTER JOIN publishers;
