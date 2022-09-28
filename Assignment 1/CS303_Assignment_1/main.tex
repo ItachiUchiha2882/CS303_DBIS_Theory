@@ -1,0 +1,351 @@
+\title{CS303 : DataBases and Information Systems \\
+    \vspace{0.6cm}
+    Assignment 1
+} % You may change the title if you want.
+% \subtitle{Hello}
+\author{Sourabh Bhosale \\ 200010004}
+
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{amsmath,mathtools}
+\usepackage{amssymb}
+\usepackage[super]{nth}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{minted}
+\usepackage{indentfirst}
+\DeclareMathSizes{12}{30}{16}{12}
+\usepackage{environ}
+\NewEnviron{myequation}{
+\begin{center}
+    \begin{equation*}
+    \scalebox{0.7}{$\BODY$}
+    \end{equation*}
+\end{center}
+}
+% \usepackage{fontspec}
+% \usepackage[showframe]{geometry}
+
+% \usepackage[default]{sourcesanspro}
+% \usepackage[T1]{fontenc}
+
+% \usepackage[sfdefault]{noto}
+% \usepackage[T1]{fontenc}
+
+\usepackage[default,oldstyle,scale=0.95]{opensans} %% Alternatively
+%% use the option 'defaultsans' instead of 'default' to replace the
+%% sans serif font only.
+\usepackage[T1]{fontenc}
+
+% \setmainfont{Roboto}
+\usepackage{titling}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\renewcommand\maketitlehooka{\null\mbox{}\vfill}
+\renewcommand\maketitlehookd{\vfill\null}
+
+\begin{document}
+
+
+\begin{titlingpage}
+\maketitle
+\end{titlingpage}
+
+\newpage
+%---------------------------------------------------------------------
+
+\section{Problem 1}
+
+\subsection*{Given banking database:}
+
+\indent{Branch (branch\_name, branch\_city, assets)}\\
+\indent{customer (customer\_name, customer\_street, customer\_city)}\\
+\indent{loan (loan\_number, branch\_name, amount)}\\
+\indent{borrower (customer\_name, loan\_number)}\\
+\indent{account (account\_number, branch\_name, balance)}\\
+\indent{depositor (customer\_name, account\_number)}
+
+
+\subsection*{a) Expressions in the relational algebra}
+
+\subsubsection*{i. Names of all branches located in “Chicago”}
+
+\begin{myequation}
+\Pi_{branch\_name}
+(\sigma_{branch\_city = 'Chicago'}(Branch))
+\end{myequation}
+
+
+\subsubsection*{ii. Names of all borrowers who have a loan in the branch “Downtown”}
+
+% $
+\begin{myequation}
+\Pi_{customer\_name}
+(\sigma_{branch\_name = 'Downtown'}(borrower \bowtie loan)
+\end{myequation}
+
+% $
+
+\subsection*{b) Integrity constraints }
+
+\begin{table}[!hbt]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Table} & 
+        \textbf{Primary Key} & \textbf{\begin{tabular}[c]{@{}c@{}}Foreign keys\\(Referencing table) \end{tabular}}  \\
+        \hline
+        Branch & 
+        branch\_name & 
+        - \\ 
+        \hline
+        customer & 
+        \begin{tabular}[c]{@{}c@{}}customer\_name,\\
+        customer\_street,\\
+        customer\_city \end{tabular} &
+        - \\  
+        \hline
+        loan & 
+        loan\_number &
+        \begin{tabular}[c]{@{}c@{}}(branch\_name) references branch \end{tabular} \\  
+        \hline
+        borrower & 
+        \begin{tabular}[c]{@{}c@{}}customer\_name,\\loan\_number \end{tabular} &
+        \begin{tabular}[c]{@{}c@{}}(customer\_name) references customer,\\(loan\_number) references loan\end{tabular} \\  
+        \hline
+        account & 
+        account\_number &
+        \begin{tabular}[c]{@{}c@{}}(branch\_name) references branch \end{tabular} \\  
+        \hline
+        depositer & 
+        \begin{tabular}[c]{@{}c@{}}customer\_name,\\account\_number \end{tabular} &
+        \begin{tabular}[c]{@{}c@{}}(customer\_name) references customer,\\(account\_number) references account \end{tabular} \\  
+        \hline
+        \end{tabular}
+    \caption{Appropriate Primary and Foreign Keys for the Banking schema}
+    \label{tab:my_label}
+\end{table}
+\newpage
+
+\subsection*{c) Expressions in the relational algebra }
+
+\subsubsection*{i. All loan numbers with a loan value greater than \$10,000}
+\begin{myequation}
+\Pi_{loan\_number}(\sigma_{amount > 10000}(loan))
+\end{myequation}
+
+\subsubsection*{ii. Names of all depositors who have an account with a value greater than \$6,000}
+\begin{myequation}
+\Pi_{customer\_name}(\sigma_{balance > 6000}(account \bowtie depositor))
+\end{myequation}
+
+\subsubsection*{iii. Names of all depositors who have an account with a value greater than \$6,000 at the “Uptown” branch}
+\begin{myequation}
+\Pi_{customer\_name}(\sigma_{(balance > 6000) \wedge (branch\_name=``Uptown")}(account \bowtie depositor))
+\end{myequation}
+
+%---------------------------------------------------------------------
+
+\section{Problem 2}
+
+\subsection*{i. Output of \,$\Pi_{Name}(\sigma_{age > 25}(User))$ :}
+\begin{table}[!hbt]
+    \centering
+    \begin{tabular}{|c|}
+        \hline
+        \textbf{Name} \\
+        \hline
+        Victor \\
+        \hline
+        Jane \\
+        \hline
+        \end{tabular}
+    \label{tab:my_label}
+\end{table}
+
+\subsection*{ii. Output of \,$\sigma_{(Id>2)~\vee~(age!=31)}(User)$ :}
+\begin{table}[!hbt]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Id} &
+        \textbf{Name} &
+        \textbf{Age} &
+        \textbf{Gender} &
+        \textbf{OccupationId} &
+        \textbf{CityId} \\
+        \hline
+        1 & 
+        John &
+        25 &
+        Male &
+        1 &
+        3 \\
+        \hline
+        2 & 
+        Sara &
+        20 &
+        Female &
+        3 &
+        4 \\
+        \hline
+        3 & 
+        Victor &
+        31 &
+        Male &
+        2 &
+        5 \\
+        \hline
+        4 & 
+        Jane &
+        27 &
+        Female &
+        1 &
+        3 \\
+        \hline
+        \end{tabular}
+    \label{tab:my_label}
+\end{table}
+\newpage
+
+\subsection*{iii. Output of \,$\sigma_{User.OccupationId~=~Occupation.OccupationId}(User\times Occupation)$ :}
+\begin{table}[!hbt]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Id} &
+        \textbf{Name} &
+        \textbf{Age} &
+        \textbf{Gender} &
+        \textbf{OccupationId} &
+        \textbf{CityId} &
+        \textbf{OccupationId} &
+        \textbf{OccupationName}\\
+        \hline
+        1 & 
+        John &
+        25 &
+        Male &
+        1 &
+        3 &
+        1 &
+        Software Engineer\\
+        \hline
+        2 & 
+        Sara &
+        20 &
+        Female &
+        3 &
+        4 &
+        3 &
+        Pharmacist\\
+        \hline
+        3 & 
+        Victor &
+        31 &
+        Male &
+        2 &
+        5 &
+        2 &
+        Accountant\\
+        \hline
+        4 & 
+        Jane &
+        27 &
+        Female &
+        1 &
+        3 &
+        1 &
+        Software Engineer\\
+        \hline
+        \end{tabular}
+    \label{tab:my_label}
+\end{table}
+
+\subsection*{iv. Output of \,$User \bowtie Occupation \bowtie City$ :}
+\begin{table}[!hbt]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Id} &
+        \textbf{Name} &
+        \textbf{Age} &
+        \textbf{Gender} &
+        \textbf{OccupationId} &
+        \textbf{CityId} &
+        \textbf{OccupationName} &
+        \textbf{CityName}\\
+        \hline
+        1 & 
+        John &
+        25 &
+        Male &
+        1 &
+        3 &
+        Software Engineer &
+        Boston\\
+        \hline
+        2 & 
+        Sara &
+        20 &
+        Female &
+        3 &
+        4 &
+        Pharmacist &
+        New York\\
+        \hline
+        3 & 
+        Victor &
+        31 &
+        Male &
+        2 &
+        5 &
+        Accountant &
+        Toronto\\
+        \hline
+        4 & 
+        Jane &
+        27 &
+        Female &
+        1 &
+        3 &
+        Software Engineer &
+        Boston\\
+        \hline
+        \end{tabular}
+    \label{tab:my_label}
+\end{table}
+
+\subsection*{v. Output of \,$\Pi_{Name,~Gender}(\sigma_{CityName=``Boston"}(User\bowtie City))$ :}
+\begin{table}[!hbt]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Name} &
+        \textbf{Gender}\\
+        \hline
+        John &
+        Male\\
+        \hline
+        Jane &
+        Female\\
+        \hline
+        \end{tabular}
+    \label{tab:my_label}
+\end{table}
+
+\newpage
+%---------------------------------------------------------------------
+
+
+\end{document}
