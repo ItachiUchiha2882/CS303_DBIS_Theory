@@ -1,0 +1,36 @@
+  // Prepared Statement to check if the userid exists in the database.
+  PreparedStatement checkUser = conn.prepareStatement(
+      "select * from users where userid = ?");
+  checkUser.setString(1, userid);
+  ResultSet rs1 = checkUser.executeQuery();
+	int countUser = 0;
+	while (rs1.next()) {
+		countUser += 1;
+	}
+
+  // Prepared Statement to check if the password exists in the database.
+  PreparedStatement checkPass = conn.prepareStatement(
+        "select * from users where password = ?");
+  checkPass.setString(1, password);
+  ResultSet rs2 = checkPass.executeQuery();
+	int countPass = 0;
+	while (rs2.next()) {
+		countPass += 1;
+	}
+  
+  if(countUser > 0 && countPass > 0){ 
+	RequestDispatcher rd = 
+                request.getRequestDispatcher("Result.jsp");
+	  HttpSession session = request.getSession();
+	  session.setAttribute("userid", userid);
+	  rd.forward(request, response);
+  } else {
+	  RequestDispatcher rd = 
+            request.getRequestDispatcher("ResultException.jsp");
+	  rd.forward(request, response);
+  }	
+  } catch (Exception e) {
+	e.printStackTrace();
+  }
+    }
+}

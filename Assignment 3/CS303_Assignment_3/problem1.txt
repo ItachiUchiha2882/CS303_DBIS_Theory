@@ -1,0 +1,24 @@
+    brand(name, brand_id)
+    model(name, model_id)
+    vehicle(VIN)
+    option(option_id, features)
+    customer(customer_id, name, address)
+    dealer(dealer_id, name, address)
+    has_model(brand_id, model_id,
+        foreign key brand_id references brand,
+        foreign key model_id references model)
+    has_vehicle(model_id, VIN,
+        foreign key VIN references vehicle,
+        foreign key model_id references model)
+    has_options(model_id, option_id,
+        foreign key option_id references option,
+        foreign key model_id references model)
+    has(VIN, model_id, option_id,
+        foreign key VIN references vehicle,
+        foreign key (model_id, option_id) references has_options)
+    dealt_by(VIN, dealer_id,
+        foreign key dealer_id references dealer,
+        foreign key VIN references vehicle)
+    owned_by(VIN, customer_id,
+        foreign key customer_id references customer,
+        foreign key VIN references vehicle)

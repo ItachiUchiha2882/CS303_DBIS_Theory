@@ -1,0 +1,13 @@
+    customer(customer_id, name, street, country, PIN)
+    package(package_id, weight, contents)
+    location(location_id, location_type, street, country, PIN)
+    stores(package_id, location_id, location_type
+        foreign key package_id references package,
+        foreign key location_id references location,
+        foreign key location_type references location)
+    receives(customer_id, package_id, time_received,
+        foreign key customer_id references customer,
+        foreign key package_id references package)
+    ships(customer_id, package_id, time_shipped,
+        foreign key customer_id references customer,
+        foreign key package_id references package)
